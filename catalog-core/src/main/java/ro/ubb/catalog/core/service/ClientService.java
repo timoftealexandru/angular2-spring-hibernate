@@ -2,6 +2,7 @@ package ro.ubb.catalog.core.service;
 
 import ro.ubb.catalog.core.model.Client;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -9,15 +10,13 @@ import java.util.Set;
  */
 public interface ClientService {
 
-    void addClient(Client cl);
+    List<Client> findAll();
 
-    Set<Client> getAllClients() ;
+    Client updateClient(Long clientId, String name, Integer cnp);
 
-    Set<Client> filterClientsByAge(int age) ;
+    Client createClient(String name, Integer cnp);
 
-    void deleteClient(Client client);
-
-    void updateClient(Client client);
+    void deleteClient(Long clientId);
 
 
 }
