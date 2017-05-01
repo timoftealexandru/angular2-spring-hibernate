@@ -2,19 +2,19 @@ package ro.ubb.catalog.core.service;
 
 import ro.ubb.catalog.core.model.Rent;
 
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by Nicu on 4/9/17.
  */
 public interface RentService {
-    void addRent(Rent rent);
 
-    Set<Rent> getAllRents() ;
+    List<Rent> findAll();
 
-    Set<Rent> filterRentsByNOC(int noc);
+    Rent createRent(Integer clientCnp,String movieTitle, Integer noCopies);
 
-    void deleteRent(Rent rent);
+    Rent updateRent(Long rentId, Integer clientCnp, String movieTitle,Integer noCopies);
 
-    void updateRent(Rent rent);
+    void deleteRent(Long rentId);
 }

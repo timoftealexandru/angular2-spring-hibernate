@@ -1,7 +1,5 @@
 package ro.ubb.catalog.core.model;
 
-import com.sun.xml.internal.rngom.parse.host.Base;
-
 import javax.persistence.*;
 
 /**

@@ -2,21 +2,19 @@ package ro.ubb.catalog.core.service;
 
 import ro.ubb.catalog.core.model.Movie;
 
-import java.util.Set;
+import java.util.List;
+
 
 /**
  * Created by Nicu on 4/9/17.
  */
 public interface MovieService {
-    void addMovie(Movie movie);
 
-    Set<Movie> getAllMovies();
+    List<Movie> getAllMovies();
 
-    Set<Movie> filterMovieByType(String m);
+    Movie createMovie(String name, String director, String genre, Integer availableCopies);
 
-    void deleteMovie(Movie movie);
+    Movie updateMovie(Long movieID,String name, String director, String genre, Integer availableCopies);
 
-    void updateMovie(Movie movie);
-
-
+    void deleteMovie(Long movieID);
 }

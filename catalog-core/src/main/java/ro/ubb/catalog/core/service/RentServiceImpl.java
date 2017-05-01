@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.ubb.catalog.core.model.Rent;
 import ro.ubb.catalog.core.repository.RentRepository;
 
@@ -14,62 +15,61 @@ import java.util.stream.Collectors;
 /**
  * Created by Nicu on 4/9/17.
  */
-@Service
+@Service("rentServiceImpl")
 public class RentServiceImpl implements RentService {
 
     private static final Logger log = LoggerFactory.getLogger(RentServiceImpl.class);
-
 
     @Autowired
     private RentRepository rentRepository;
 
     @Override
-    public void addRent(Rent rent){
-        log.trace("addRent --- method entered");
-
-        rentRepository.save(rent);
-
-        log.trace("add: rent={}", rent);
-
-    }
-
-    @Override
-    public Set<Rent> getAllRents() {
-        log.trace("findAll --- method entered");
+    public List<Rent> findAll() {
+        log.trace("findAll");
 
         List<Rent> rents = rentRepository.findAll();
 
         log.trace("findAll: rents={}", rents);
 
-        return rents.stream().collect(Collectors.toSet());
+        return rents;
     }
 
     @Override
-    public Set<Rent> filterRentsByNOC(int noc){
-        return null;
-    }
+    @Transactional
+    public Rent updateRent(Long rentId,  Integer clientCnp, String movieName, Integer noCopies) {
+        log.trace("updateRent: rentId={}, movieName={}, clientCnp={}, noCopies={}",
+                rentId, movieName,clientCnp, noCopies);
 
-    @Override
-    public void deleteRent(Rent rent){
-
-        log.trace("deleteClient --- method entered");
-
-        rentRepository.delete(rent);
-
-        log.trace("deleteRent: client={}", rent);
-
-    }
-
-    @Override
-    public void updateRent(Rent rent){
-
-        log.trace("findAll --- method entered");
-
-        rentRepository.delete(rent);
-        rentRepository.save(rent);
-
+        Rent rent = rentRepository.findOne(rentId);
+        rent.setMovieTitle(movieName);
+        rent.setClientCnp(clientCnp);
+        rent.setNoCopies(noCopies);
         log.trace("updateRent: rent={}", rent);
 
+        return rent;
     }
-}
 
+    @Override
+    public Rent createRent( Integer clientCnp,String movieTitle,Integer noCopies) {
+        log.trace("createRent: movieTitle={}, clientCnp={}, noCopie={}",
+                movieTitle, clientCnp, noCopies);
+
+        Rent rent = new Rent(clientCnp,movieTitle,noCopies);
+        rent = rentRepository.save(rent);
+
+        log.trace("createRent: rent={}", rent);
+
+        return rent;
+    }
+
+    @Override
+    public void deleteRent(Long rentId) {
+        log.trace("deleteRent: rentId={}", rentId);
+
+        rentRepository.delete(rentId);
+
+        log.trace("deleteRent - method end");
+    }
+
+
+}
