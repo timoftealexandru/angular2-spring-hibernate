@@ -5,76 +5,185 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ro.ubb.catalog.core.model.Client;
 import ro.ubb.catalog.core.model.Movie;
+import ro.ubb.catalog.core.repository.ClientRepository;
 import ro.ubb.catalog.core.repository.MovieRepository;
+import ro.ubb.catalog.core.repository.RentRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Created by Nicu on 4/9/17.
  */
+
 @Service
 public class MovieServiceImpl implements MovieService {
 
     private static final Logger log = LoggerFactory.getLogger(MovieServiceImpl.class);
 
-
     @Autowired
     private MovieRepository movieRepository;
 
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Override
-    @Transactional
-    public Movie createMovie(String name, String director, String genre, Integer availableCopies){
-        log.trace("updateMovieService: movieName= {}", name);
-
-        Movie movie = new Movie(name,director,genre,availableCopies);
-        movie = movieRepository.save(movie);
-
-        log.trace("updateMovieService: movie", movie);
-
-        return movie;
-    }
-
-    @Override
-    public List<Movie> getAllMovies() {
-        log.trace("findAllService --- method entered");
+    public List<Movie> findAll() {
+        log.trace("findAll");
 
         List<Movie> movies = movieRepository.findAll();
 
-        log.trace("findAllService: movies={}", movies);
+        log.trace("findAll: movies={}", movies);
 
         return movies;
     }
 
-
     @Override
-    public void deleteMovie(Long movieID){
+    public Movie findMovie(Long movieId) {
+        log.trace("findMovie: movieId={}", movieId);
 
-        log.trace("deleteMovieService --- method entered");
+        Movie movie = movieRepository.findOne(movieId);
 
-        movieRepository.delete(movieID);
+        log.trace("findMovie: movie={}", movie);
 
-        log.trace("deleteMovieService: movie={}", movieID);
-
+        return movie;
     }
 
     @Override
     @Transactional
-    public Movie updateMovie(Long movieID, String name, String director, String genre, Integer availableCopies){
+    public Movie updateMovie(Long movieID, String name, String director, String genre, Integer availableCopies,Set<Long> clients) {
+        log.trace("updateMovie: movieId={},name={}, director={}, genre={}, availableCopies={}, clients={}",
+                movieID, name, director,genre,availableCopies,clients);
 
-        log.trace("updateMovieService --- method entered");
-
-        Movie movie =movieRepository.findOne(movieID);
-        movie.setGenre(genre);
-        movie.setDirector(director);
+        Movie movie = movieRepository.findOne(movieID);
         movie.setName(name);
+        movie.setDirector(director);
+        movie.setGenre(genre);
         movie.setAvailableCopies(availableCopies);
+        movie.getClients().stream()
+                .map(d -> d.getId())
+                .forEach(id -> {
+                    if (clients.contains(id)) {
+                        clients.remove(id);
+                    }
+                });
+        List<Client> clientList = clientRepository.findAll(clients);
+        clientList.stream().forEach(c -> movie.addClient(c));
 
-        log.trace("updateMovieService: movie={}", movie);
+        log.trace("updateMovie: movie={}", movie);
 
         return movie;
     }
+
+    @Override
+    public Movie createMovie(String name, String director, String genre, Integer availableCopies) {
+        log.trace("createMovie: name={}, director={}, genre={}, availableCopies={}",
+                name, director,genre,availableCopies);
+
+        Movie movie = Movie.builder()
+                .name(name)
+                .director(director)
+                .genre(genre)
+                .availableCopies(availableCopies)
+                .build();
+
+        Movie m = movieRepository.save(movie);
+
+        log.trace("createMovie: movie={}", m);
+
+        return m;
+    }
+
+    @Override
+    public void deleteMovie(Long movieId) {
+        log.trace("deleteMovie: movieId={}", movieId);
+
+        movieRepository.delete(movieId);
+
+        log.trace("deletemovie - method end");
+    }
+
+    @Override
+    @Transactional
+    public Movie updateMovieNocopies(Long movieid, Map<Long, Integer> nocopies) {
+        log.trace("updateMovieNocopies: movieid={}, nocopies={}", movieid, nocopies);
+
+        Movie movie = movieRepository.findOne(movieid);
+        movie.getRents().stream()
+                .forEach(r -> r.setNocopies(nocopies.get(r.getClient().getId())));
+
+        log.trace("updateMovieNocopies: movie={}", movie);
+        return movie;
+    }
+
+
 }
+
+
+//@Service
+//public class MovieServiceImpl implements MovieService {
+//
+//    private static final Logger log = LoggerFactory.getLogger(MovieServiceImpl.class);
+//
+//
+//    @Autowired
+//    private MovieRepository movieRepository;
+//
+//
+//    @Override
+//    @Transactional
+//    public Movie createMovie(String name, String director, String genre, Integer availableCopies){
+//        log.trace("updateMovieService: movieName= {}", name);
+//
+//        Movie movie = new Movie(name,director,genre,availableCopies);
+//        movie = movieRepository.save(movie);
+//
+//        log.trace("updateMovieService: movie", movie);
+//
+//        return movie;
+//    }
+//
+//    @Override
+//    public List<Movie> getAllMovies() {
+//        log.trace("findAllService --- method entered");
+//
+//        List<Movie> movies = movieRepository.findAll();
+//
+//        log.trace("findAllService: movies={}", movies);
+//
+//        return movies;
+//    }
+//
+//
+//    @Override
+//    public void deleteMovie(Long movieID){
+//
+//        log.trace("deleteMovieService --- method entered");
+//
+//        movieRepository.delete(movieID);
+//
+//        log.trace("deleteMovieService: movie={}", movieID);
+//
+//    }
+//
+//    @Override
+//    @Transactional
+//    public Movie updateMovie(Long movieID, String name, String director, String genre, Integer availableCopies){
+//
+//        log.trace("updateMovieService --- method entered");
+//
+//        Movie movie =movieRepository.findOne(movieID);
+//        movie.setGenre(genre);
+//        movie.setDirector(director);
+//        movie.setName(name);
+//        movie.setAvailableCopies(availableCopies);
+//
+//        log.trace("updateMovieService: movie={}", movie);
+//
+//        return movie;
+//    }
+//}

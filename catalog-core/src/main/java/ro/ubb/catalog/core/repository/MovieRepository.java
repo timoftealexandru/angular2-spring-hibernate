@@ -12,7 +12,8 @@ import java.io.Serializable;
  * Created by Nicu on 4/9/17.
  */
 
-@Transactional
-public interface MovieRepository extends JpaRepository<Movie,Long> {
+public interface MovieRepository extends RentRepository<Movie, Long> {
+
 }
+
 

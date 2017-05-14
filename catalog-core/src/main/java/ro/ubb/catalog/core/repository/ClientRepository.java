@@ -12,6 +12,5 @@ import java.io.Serializable;
  * Created by macbookpro on 4/9/17.
  */
 
-@Transactional
-public interface ClientRepository extends JpaRepository<Client,Long> {
+public interface ClientRepository extends RentRepository<Client,Long> {
 }

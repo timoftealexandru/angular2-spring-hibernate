@@ -12,6 +12,7 @@ import java.io.Serializable;
  * Created by macbookpro on 4/9/17.
  */
 
+@NoRepositoryBean
 @Transactional
-public interface RentRepository extends JpaRepository<Rent,Long>{
+public interface RentRepository<T extends BaseEntity<ID>, ID extends Serializable> extends JpaRepository<T, ID> {
 }

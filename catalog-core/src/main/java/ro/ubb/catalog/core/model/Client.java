@@ -1,17 +1,26 @@
 package ro.ubb.catalog.core.model;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Nicu on 4/9/17.
  */
 @Entity
-@Table(name = "clients")
-public class Client extends BaseEntity<Long>{
-    //region Fields
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+@Table(name = "client")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
+public class Client extends BaseEntity<Long> {
+
     @Column(name = "cnp",nullable = false)
     private int cnp;
 
@@ -19,36 +28,37 @@ public class Client extends BaseEntity<Long>{
     private String name;
 
 
-   //endregion
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Rent> rents = new HashSet<>();
 
-    //region Constructor
-    public Client() {
-
+    public Set<Movie> getMovies() {
+        return Collections.unmodifiableSet(
+                rents.stream()
+                        .map(r -> r.getMovie())
+                        .collect(Collectors.toSet())
+        );
     }
 
-    public Client(String name, int cnp) {
-        this.name = name;
-        this.cnp = cnp;
-    }
-    //endregion
-
-    //region Methods
-    public String getName() {
-        return name;
+    public void addMovie(Movie movie) {
+        Rent rent = new Rent();
+        rent.setMovie(movie);
+        rent.setClient(this);
+        rents.add(rent);
     }
 
-    public void setName(String name) {
-        this.name = name;
+
+    public void addMovies(Set<Movie> movies) {
+        movies.stream()
+                .forEach(m -> addMovie(m));
     }
 
-    public void setCnp(int cnp) {
-        this.cnp = cnp;
+    public void addNocopies(Movie movie, Integer nocopies) {
+        Rent rent = new Rent();
+        rent.setMovie(movie);
+        rent.setNocopies(nocopies);
+        rent.setClient(this);
+        rents.add(rent);
     }
-
-    public int getCnp() {
-        return cnp;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -57,14 +67,12 @@ public class Client extends BaseEntity<Long>{
 
         Client that = (Client) o;
 
-        if (cnp != that.cnp) return false;
         return name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        return result;
+        return name.hashCode();
     }
 
     public String toString() {
@@ -72,5 +80,72 @@ public class Client extends BaseEntity<Long>{
                 "name='" + name + '\'' +
                 ", cnp='" + cnp +
                 "} " + super.toString();
-    }//endregion
+    }
 }
+
+//public class Client extends BaseEntity<Long>{
+//    //region Fields
+//    //@Id
+//    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "cnp",nullable = false)
+//    private int cnp;
+//
+//    @Column(name = "name", nullable = false)
+//    private String name;
+//
+//
+//   //endregion
+//
+//    //region Constructor
+//    public Client() {
+//
+//    }
+//
+//    public Client(String name, int cnp) {
+//        this.name = name;
+//        this.cnp = cnp;
+//    }
+//    //endregion
+//
+//    //region Methods
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public void setCnp(int cnp) {
+//        this.cnp = cnp;
+//    }
+//
+//    public int getCnp() {
+//        return cnp;
+//    }
+//
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        Client that = (Client) o;
+//
+//        if (cnp != that.cnp) return false;
+//        return name.equals(that.name);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        int result = name.hashCode();
+//        return result;
+//    }
+//
+//    public String toString() {
+//        return "Client{" +
+//                "name='" + name + '\'' +
+//                ", cnp='" + cnp +
+//                "} " + super.toString();
+//    }//endregion
+//}

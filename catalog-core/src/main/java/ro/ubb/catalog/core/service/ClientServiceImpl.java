@@ -6,22 +6,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.ubb.catalog.core.model.Client;
+import ro.ubb.catalog.core.model.Movie;
 import ro.ubb.catalog.core.repository.ClientRepository;
+import ro.ubb.catalog.core.repository.MovieRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by Nicu on 4/9/17.
  */
-@Service("clientServiceImpl")
+
+@Service
 public class ClientServiceImpl implements ClientService {
 
     private static final Logger log = LoggerFactory.getLogger(ClientServiceImpl.class);
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private MovieRepository movieRepository;
 
     @Override
     public List<Client> findAll() {
@@ -35,32 +41,56 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    @Transactional
-    public Client updateClient(Long clientId, String name, Integer cnp) {
-        log.trace("updateClient: clientId={}, name={}, cnp={}",
-                clientId, name, cnp);
+    public Client findClient(Long clientId) {
+        log.trace("findMovie: clientId={}", clientId);
 
         Client client = clientRepository.findOne(clientId);
-        client.setName(name);
-        client.setCnp(cnp);
 
-        log.trace("updateClient: client={}", client);
+        log.trace("findMovie: client={}", client);
 
         return client;
     }
 
     @Override
-    public Client createClient(String name, Integer cnp) {
-        log.trace("createClient: name={}, cnp={}",
-                 name, cnp);
+    @Transactional
+    public Client updateClient(Long clientId, int cnp, String name, Set<Long> movies) {
+        log.trace("updateClient: clientId={}, cnp={}, name={}, movies={}",
+                clientId, cnp, name, movies);
 
-        Client client = new Client( name, cnp);
-        client = clientRepository.save(client);
+        Client client = clientRepository.findOne(clientId);
+        client.setCnp(cnp);
+        client.setName(name);
+        client.getMovies().stream()
+                .map(d -> d.getId())
+                .forEach(id -> {
+                    if(movies.contains(id)) {
+                        movies.remove(id);
+                    }
+                });
+        List<Movie> movieList = movieRepository.findAll(movies);
+        movieList.stream().forEach(m -> client.addMovie(m));
 
-        log.trace("createClient: client={}", client);
+        log.trace("updatedClient: client={}", client);
 
         return client;
     }
+
+    @Override
+    public Client createClient(int cnp, String name) {
+        log.trace("createClient: cnp={}, name={}", cnp, name);
+
+        Client client = Client.builder()
+                .cnp(cnp)
+                .name(name)
+                .build();
+
+        Client c = clientRepository.save(client);
+
+        log.trace("createClient: client={}", c);
+
+        return c;
+    }
+
 
     @Override
     public void deleteClient(Long clientId) {
@@ -71,5 +101,89 @@ public class ClientServiceImpl implements ClientService {
         log.trace("deleteClient - method end");
     }
 
+    @Override
+    @Transactional
+    public Client updateClientNocopies(Long clientId, Map<Long, Integer> nocopies) {
+        log.trace("updateClientNocopies: clientid={}, nocopies={}", clientId, nocopies);
 
+        Client client = clientRepository.findOne(clientId);
+        client.getRents().stream()
+                .forEach(r -> r.setNocopies(nocopies.get(r.getClient().getId())));
+
+        log.trace("updateClientNocopies: client={}", client);
+        return client;
+    }
+//
+//    @Override
+//    @Transactional
+//    public Client updateClientCnp(Long clientId, Map<Long, Integer> cnp) {
+//        log.trace("updateClientCnp: clientId={}, cnp={}", clientId, cnp);
+//
+//        Client client = clientRepository.findOne(clientId);
+//        client.getRents().stream()
+//                .forEach();
+//
+//        return null;
+//    }
 }
+
+
+
+//@Service("clientServiceImpl")
+//public class ClientServiceImpl implements ClientService {
+//
+//    private static final Logger log = LoggerFactory.getLogger(ClientServiceImpl.class);
+//
+//    @Autowired
+//    private ClientRepository clientRepository;
+//
+//    @Override
+//    public List<Client> findAll() {
+//        log.trace("findAll");
+//
+//        List<Client> clients = clientRepository.findAll();
+//
+//        log.trace("findAll: clients={}", clients);
+//
+//        return clients;
+//    }
+//
+//    @Override
+//    @Transactional
+//    public Client updateClient(Long clientId, String name, Integer cnp) {
+//        log.trace("updateClient: clientId={}, name={}, cnp={}",
+//                clientId, name, cnp);
+//
+//        Client client = clientRepository.findOne(clientId);
+//        client.setName(name);
+//        client.setCnp(cnp);
+//
+//        log.trace("updateClient: client={}", client);
+//
+//        return client;
+//    }
+//
+//    @Override
+//    public Client createClient(String name, Integer cnp) {
+//        log.trace("createClient: name={}, cnp={}",
+//                 name, cnp);
+//
+//        Client client = new Client( name, cnp);
+//        client = clientRepository.save(client);
+//
+//        log.trace("createClient: client={}", client);
+//
+//        return client;
+//    }
+//
+//    @Override
+//    public void deleteClient(Long clientId) {
+//        log.trace("deleteClient: clientId={}", clientId);
+//
+//        clientRepository.delete(clientId);
+//
+//        log.trace("deleteClient - method end");
+//    }
+//
+//
+//}
