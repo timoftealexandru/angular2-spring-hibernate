@@ -1,0 +1,82 @@
+<h3>Add Movie</h3>
+
+<div>
+  <label for="movieName">Name: </label>
+  <input type="text" id="movieName" class="form-control"
+         required minlength="4" maxlength="24"
+         name="name" [(ngModel)]="Movie.name"
+         #movieName="ngModel" >
+
+  <div *ngIf="movieName.errors && (movieName.dirty || movieName.touched)"
+       class="alert alert-danger">
+    <div [hidden]="!movieName.errors.required">
+      Name is required
+    </div>
+    <div [hidden]="!movieName.errors.minlength">
+      Name must be at least 4 characters long.
+    </div>
+    <div [hidden]="!movieName.errors.maxlength">
+      Name cannot be more than 24 characters long.
+    </div>
+  </div>
+</div>
+
+<div>
+  <label for="movieDirector">Director: </label>
+  <input type="text" id="movieDirector" class="form-control"
+         required minlength="4" maxlength="24"
+         name="name" [(ngModel)]="Movie.director"
+         #movieDirector="ngModel" >
+
+  <div *ngIf="movieDirector.errors && (movieDirector.dirty || movieDirector.touched)"
+       class="alert alert-danger">
+    <div [hidden]="!movieDirector.errors.required">
+      Director is required
+    </div>
+    <div [hidden]="!movieDirector.errors.minlength">
+      Director must be at least 4 characters long.
+    </div>
+    <div [hidden]="!movieDirector.errors.maxlength">
+      Director cannot be more than 24 characters long.
+    </div>
+  </div>
+</div>
+
+<div>
+  <label for="movieGenre">Genre: </label>
+  <select id="movieGenre" class="form-control"
+          name="movieGenre"
+          [(ngModel)]="Movie.genre" required
+          #movieGenre="ngModel" >
+    <option *ngFor="let g of genres" [value]="g">{{g}}</option>
+  </select>
+  <div *ngIf="movieGenre.errors && movieGenre.touched" class="alert alert-danger">
+    <div [hidden]="!movieGenre.errors.required">Genre is required</div>
+  </div>
+</div>
+
+<div>
+<label for="availableCopies">Available Copies: </label>
+<input type="text" id="availableCopies" class="form-control"
+       required minlength="2" maxlength="24"
+       name="availableCopies" [(ngModel)]="Movie.availableCopies"
+       #availableCopies="ngModel" >
+
+<div *ngIf="availableCopies.errors && (availableCopies.dirty || availableCopies.touched)"
+     class="alert alert-danger">
+  <div [hidden]="!availableCopies.errors.required">
+    Available Copies is required
+  </div>
+  <div [hidden]="!moavailableCopiesvieDirector.errors.minlength">
+    Available Copies must be at least 2 characters long.
+  </div>
+  <div [hidden]="!availableCopies.errors.maxlength">
+    Available Copies cannot be more than 24 characters long.
+  </div>
+</div>
+</div>
+
+<div>
+  <button (click)="goBack()">Back</button>
+  <button (click)="save(movieName.value, movieDirector.value, movieGenre.value, availableCopies.value)">Save</button>
+</div>

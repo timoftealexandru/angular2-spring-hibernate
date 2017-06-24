@@ -1,0 +1,25 @@
+<h2>Rents</h2>
+<div>
+  <label>Cnp:</label>
+  <input #cnp>
+</div>
+<div>
+  <button (click)="goBack()">Back</button>
+  <button (click)="loadMoviesAndNoCopies(cnp.value)">Next</button>
+</div>
+
+<form *ngIf="showMoviesAndNoCopies" #rentForm="ngForm">
+  <h3>NoCopies:</h3>
+  <div *ngFor="let rent of rents">
+    <div>Movie {{rent.movieId}}</div>
+    <div>Client {{rent.clientId}}</div>
+
+    <label>No Of copies {{rent.noCopies}}</label>
+    <input
+      [name]="rent.movieId"
+      [ngModel]="rent.noCopies"
+      [placeholder]="0">
+  </div>
+  <button (click)="save(rentForm)">Save</button>
+</form>
+

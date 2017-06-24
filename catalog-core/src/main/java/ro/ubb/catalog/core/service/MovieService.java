@@ -1,0 +1,39 @@
+package ro.ubb.catalog.core.service;
+
+import ro.ubb.catalog.core.model.Movie;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+
+/**
+ * Created by Nicu on 4/9/17.
+ */
+
+public interface MovieService {
+    List<Movie> findAll();
+
+    Movie findMovie(Long movieId);
+
+    Movie updateMovie(Long movieId, String name, String director, String genre,Integer availableCopies,
+                          Set<Long> clients);
+
+    Movie createMovie(String name, String director, String genre,Integer availableCopies);
+
+    void deleteMovie(Long movieId);
+
+    Movie updateMovieNoCopies(Long movieid, Map<Long, Integer> noCopies);
+}
+
+//
+//public interface MovieService {
+//
+//    List<Movie> getAllMovies();
+//
+//    Movie createMovie(String name, String director, String genre, Integer availableCopies);
+//
+//    Movie updateMovie(Long movieID,String name, String director, String genre, Integer availableCopies);
+//
+//    void deleteMovie(Long movieID);
+//}
