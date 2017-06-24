@@ -9,7 +9,7 @@ import ro.ubb.catalog.core.model.Rent;
 import java.io.Serializable;
 
 /**
- * Created by macbookpro on 4/9/17.
+ * Created by Nicu on 4/9/17.
  */
 
 @NoRepositoryBean

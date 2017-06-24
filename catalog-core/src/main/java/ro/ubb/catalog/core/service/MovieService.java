@@ -25,15 +25,3 @@ public interface MovieService {
 
     Movie updateMovieNoCopies(Long movieid, Map<Long, Integer> noCopies);
 }
-
-//
-//public interface MovieService {
-//
-//    List<Movie> getAllMovies();
-//
-//    Movie createMovie(String name, String director, String genre, Integer availableCopies);
-//
-//    Movie updateMovie(Long movieID,String name, String director, String genre, Integer availableCopies);
-//
-//    void deleteMovie(Long movieID);
-//}

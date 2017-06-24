@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by radu.
+ * Created by Nicu.
  */
 
 @Configuration
@@ -32,9 +32,6 @@ import java.util.concurrent.TimeUnit;
 @EnableTransactionManagement
 @EnableCaching
 public class JPAConfig {
-
-//    @Value("${db.jdbcURL}")
-//    private String jdbcURL;
 
     @Value("${db.serverName}")
     private String serverName;

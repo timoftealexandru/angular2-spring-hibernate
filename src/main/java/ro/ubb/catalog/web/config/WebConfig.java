@@ -10,21 +10,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 
 /**
- * Created by Nicu
+ * Created by Nicu.
  */
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({"ro.ubb.catalog.web.controller", "ro.ubb.catalog.web.converter"})
+@ComponentScan({"ro.ubb.catalog.web.controller"})
 public class WebConfig {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200", "http://localhost:8080")
-                        .allowedMethods("GET", "PUT", "POST", "DELETE");
+                registry.addMapping("/*").allowedOrigins("http://localhost:4200");
             }
         };
     }

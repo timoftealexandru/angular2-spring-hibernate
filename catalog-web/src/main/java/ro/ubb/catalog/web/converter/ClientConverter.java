@@ -34,17 +34,3 @@ public class ClientConverter extends BaseConverter<Client,ClientDto> {
         return clientDto;
     }
 }
-
-//@Component
-//public class ClientConverter extends BaseConverter<Client, ClientDto> {
-//
-//    private static final Logger log = LoggerFactory.getLogger(ClientConverter.class);
-//
-//    @Override
-//    public ClientDto convertModelToDto(Client client) {
-//        ClientDto clientDto = new ClientDto(client.getName(), client.getCnp());
-//        clientDto.setId(client.getId());
-//        return clientDto;
-//    }
-//}
-

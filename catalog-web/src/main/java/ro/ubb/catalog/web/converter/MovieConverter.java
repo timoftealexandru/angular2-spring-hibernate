@@ -34,18 +34,3 @@ public class MovieConverter extends BaseConverter<Movie, MovieDto> {
         return movieDto;
     }
 }
-
-//@Component
-//public class MovieConverter extends  BaseConverter<Movie, MovieDto> {
-//    private static final Logger log = LoggerFactory.getLogger(MovieConverter.class);
-//
-//    @Override
-//    public MovieDto convertModelToDto(Movie movie){
-//
-//        MovieDto movieDto = new MovieDto(movie.getName(), movie.getDirector(),movie.getGenre(), movie.getAvailableCopies());
-//        movieDto.setId(movie.getId());
-//
-//        return movieDto;
-//
-//    }
-//}

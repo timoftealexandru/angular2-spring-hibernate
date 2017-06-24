@@ -41,17 +41,3 @@ public class RentConverter extends BaseConverterGeneric<Rent, RentDto> {
         return noCopies;
     }
 }
-
-//@Component
-//public class RentConverter extends BaseConverter<Rent, RentDto> {
-//
-//    private static final Logger log = LoggerFactory.getLogger(RentConverter.class);
-//
-//    @Override
-//    public RentDto convertModelToDto(Rent rent) {
-//        RentDto rentDto = new RentDto(rent.getClientCnp(),rent.getMovieTitle(),rent.getNoCopies());
-//        rentDto.setId(rent.getId());
-//        return rentDto;
-//    }
-//}
-
